@@ -39,6 +39,16 @@ class Rental
     end
     this_amount
   end
+
+  def points
+    points = 1
+    # add bonus for a two day new release rental
+    if movie.price_code == Movie::NEW_RELEASE && days_rented > 1
+      points += 1
+    end
+    points
+  end    
+
 end
 
 class ChildrensRental < Rental
@@ -83,17 +93,11 @@ class Statement
     frequent_renter_points = 0
     result = "Rental Record for #{customer.name}\n"
     customer.rentals.each do |rental|
-      this_amount = rental.amount
-      # add frequent renter points
-      frequent_renter_points += 1
-
-      # add bonus for a two day new release rental
-      if rental.movie.price_code == Movie::NEW_RELEASE && rental.days_rented > 1
-        frequent_renter_points += 1
-      end
       # show figures for this rental
-      result << "\t#{rental.movie.title}\t#{this_amount}\n"
-      total_amount += this_amount
+      result << "\t#{rental.movie.title}\t#{rental.amount}\n"
+
+      frequent_renter_points += rental.points
+      total_amount += rental.amount
     end
     # add footer lines
     result << "Amount owed is #{total_amount}\n"
