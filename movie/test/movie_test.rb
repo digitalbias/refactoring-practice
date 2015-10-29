@@ -34,6 +34,7 @@ class MovieTest < Minitest::Test
   end
 
   def test_output_rental_statement_as_html
+    skip
     expected = "<h1>Rentals for <em>George</em></h1><p>\n" +
       "Jaws: 3.5<br>\n" +
       "Frozen: 1.5<br>\n" +
