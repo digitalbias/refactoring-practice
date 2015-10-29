@@ -86,6 +86,14 @@ class Customer
     Statement.new.print(self)
   end
 
+  def frequent_renter_points
+    rentals.map { |rental| rental.points }.inject(:+)
+  end
+
+  def total_amount
+    rentals.map { |rental| rental.amount }.inject(:+)
+  end
+
 end
 
 class Statement
@@ -97,13 +105,10 @@ class Statement
     customer.rentals.each do |rental|
       # show figures for this rental
       result << "\t#{rental.movie.title}\t#{rental.amount}\n"
-
-      frequent_renter_points += rental.points
-      total_amount += rental.amount
     end
     # add footer lines
-    result << "Amount owed is #{total_amount}\n"
-    result << "You earned #{frequent_renter_points} frequent renter points"
+    result << "Amount owed is #{customer.total_amount}\n"
+    result << "You earned #{customer.frequent_renter_points} frequent renter points"
     result
   end
 
