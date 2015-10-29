@@ -34,12 +34,11 @@ class MovieTest < Minitest::Test
   end
 
   def test_output_rental_statement_as_html
-    skip
     expected = "<h1>Rentals for <em>George</em></h1><p>\n" +
       "Jaws: 3.5<br>\n" +
       "Frozen: 1.5<br>\n" +
       "Spectre: 15<br>\n" + 
-      "<p>You owe <em>20.0</em><p>\n"
+      "<p>You owe <em>20.0</em><p>\n" +
       "On this rental you earned <em>4</em> frequent rental points<p>"
     assert_equal expected, @customer.statement(HtmlStatement.new)
   end
