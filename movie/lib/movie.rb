@@ -64,8 +64,7 @@ class NewReleaseRental < Rental
 
  def points
     # add bonus for a two day new release rental
-    extra_points = days_rented > 1 ? 1 : 0
-    super + extra_points
+    super + (days_rented > 1 ? 1 : 0)
   end    
 
 end
