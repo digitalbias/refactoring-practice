@@ -81,35 +81,33 @@ class Customer
     @rentals << rental
   end
 
-  def statement
-    Statement.new.print(self)
+  def statement(formatter = TextStatement.new)
+    formatter.print(self)
   end
 
   def frequent_renter_points
-    rentals.map { |rental| rental.points }.inject(:+)
+    rentals.collect(&:points).inject(:+)
   end
 
   def total_amount
-    rentals.map { |rental| rental.amount }.inject(:+)
+    rentals.collect(&:amount).inject(:+)
   end
 
 end
 
-class Statement
+class TextStatement
 
   def print(customer)
-    total_amount = 0
-    frequent_renter_points = 0
     result = "Rental Record for #{customer.name}\n"
-    customer.rentals.each do |rental|
-      # show figures for this rental
-      result << "\t#{rental.movie.title}\t#{rental.amount}\n"
-    end
-    # add footer lines
+    result << customer.rentals.collect { |rental| "  #{rental.movie.title}  #{rental.amount}"}.join("\n") + "\n"
     result << "Amount owed is #{customer.total_amount}\n"
     result << "You earned #{customer.frequent_renter_points} frequent renter points"
     result
   end
-
 end
 
+class HtmlStatement
+  def print(customer)
+    
+  end
+end
