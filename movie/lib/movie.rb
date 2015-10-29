@@ -19,12 +19,12 @@ class Rental
   def self.for(movie, days_rented)
     case movie.price_code
     when Movie::NEW_RELEASE
-      NewReleaseRental.new(movie, days_rented)
+      NewReleaseRental
     when Movie::CHILDRENS
-      ChildrensRental.new(movie, days_rented)
+      ChildrensRental
     else
-      Rental.new(movie, days_rented)
-    end
+      Rental
+    end.new(movie, days_rented)
   end
 
   def initialize(movie, days_rented)
@@ -108,6 +108,10 @@ end
 
 class HtmlStatement
   def print(customer)
-    
+    result = "<h1>Rentals for <em>#{customer.name}</em></h1><p>\n"
+    result << customer.rentals.collect{|rental| "#{rental.movie.title}: #{rental.amount}<br>"}.join("\n") + "\n"
+    result << "<p>You owe <em>#{customer.total_amount}</em><p>\n"
+    result << "On this rental you earned <em>#{customer.frequent_renter_points}</em> frequent rental points<p>"
+    result
   end
 end
