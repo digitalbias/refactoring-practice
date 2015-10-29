@@ -17,8 +17,11 @@ class Rental
   attr_reader :movie, :days_rented
 
   def self.for(movie, days_rented)
-    if movie.price_code == Movie::NEW_RELEASE
+    case movie.price_code
+    when Movie::NEW_RELEASE
       NewReleaseRental.new(movie, days_rented)
+    when Movie::CHILDRENS
+      ChildrensRental.new(movie, days_rented)
     else
       Rental.new(movie, days_rented)
     end
@@ -30,25 +33,29 @@ class Rental
   end
 
   def amount
-    case movie.price_code
-    when Movie::NEW_RELEASE
-      this_amount = days_rented * 3
-    when Movie::CHILDRENS
-      this_amount = 1.5
-      if (days_rented > 3)
-        this_amount += (days_rented - 3) * 1.5
-      end
-    else      
-      this_amount = 2
-      if days_rented > 2
-        this_amount += (days_rented - 2) * 1.5
-      end
+    this_amount = 2
+    if days_rented > 2
+      this_amount += (days_rented - 2) * 1.5
+    end
+    this_amount
+  end
+end
+
+class ChildrensRental < Rental
+  def amount
+    # TODO: This calculation looks a lot like the base class calculation with some differences in amounts....
+    this_amount = 1.5
+    if (days_rented > 3)
+      this_amount += (days_rented - 3) * 1.5
     end
     this_amount
   end
 end
 
 class NewReleaseRental < Rental
+  def amount
+    this_amount = days_rented * 3
+  end
 end
 
 class Customer
