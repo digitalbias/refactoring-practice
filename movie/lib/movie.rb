@@ -41,12 +41,7 @@ class Rental
   end
 
   def points
-    points = 1
-    # add bonus for a two day new release rental
-    if movie.price_code == Movie::NEW_RELEASE && days_rented > 1
-      points += 1
-    end
-    points
+    1
   end    
 
 end
@@ -66,6 +61,13 @@ class NewReleaseRental < Rental
   def amount
     this_amount = days_rented * 3
   end
+
+ def points
+    # add bonus for a two day new release rental
+    extra_points = days_rented > 1 ? 1 : 0
+    super + extra_points
+  end    
+
 end
 
 class Customer
