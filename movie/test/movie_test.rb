@@ -10,7 +10,7 @@ class BottlesTest < Minitest::Test
     ["Ghost Busters", Movie::REGULAR]
   ]
 
-  def test_the_initial_movie_run
+  def test_output_rental_statement
     movies = MOVIE_DATA.map do |title, price_code|
       Movie.new(title, price_code)
     end
