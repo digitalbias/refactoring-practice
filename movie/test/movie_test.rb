@@ -13,22 +13,18 @@ class MovieTest < Minitest::Test
   attr_reader :customer
 
   def setup
-    movies = MOVIE_DATA.collect do |title, price_code|
-      Movie.new(title, price_code)
-    end
-
     price_mapping = MOVIE_DATA.collect do |title, price_code|
       {
-        movie: movies.select{|movie| movie.title == title}.first, 
+        movie: Movie.new(title, price_code), 
         price_code: price_code
       }
     end
 
     @customer = Customer.new("George")
 
-    customer.add_rental(Rental.for(price_mapping[0][:movie], 3))
-    customer.add_rental(Rental.for(price_mapping[1][:movie], 2))
-    customer.add_rental(Rental.for(price_mapping[2][:movie], 5))
+    customer.add_rental(Rental.for(price_mapping[0][:movie], 3, price_mapping[0][:price_code]))
+    customer.add_rental(Rental.for(price_mapping[1][:movie], 2, price_mapping[1][:price_code]))
+    customer.add_rental(Rental.for(price_mapping[2][:movie], 5, price_mapping[2][:price_code]))
   end
 
   def test_output_rental_statement
