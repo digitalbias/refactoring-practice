@@ -1,9 +1,16 @@
 class Movie
   attr_reader :title
-  attr_accessor :price_code
 
-  def initialize(title, price_code = Rental::REGULAR)
+  def initialize(title)
     @title = title
+  end
+end
+
+class RentalPricing
+  attr_accessor :movie, :price_code
+
+  def initialize(movie, price_code = Rental::REGULAR)
+    @movie = movie
     @price_code = price_code
   end
 end
@@ -15,22 +22,15 @@ class Rental
 
   attr_reader :movie, :days_rented, :price_code
 
-  def self.for(movie, days_rented, price_code = movie.price_code)
-    # Relying on the Movie here is bad...but is this really a Movie value?
-    # It could be argued to be independent of either the rental or the Movie.
-    #
-    # For example, a Movie is static and doesn't change, but the price to rent it
-    # can fluxuate based on market demands. I contend that the price for the rental
-    # is associated with the time of rental and the movie...it's based on 
-    # an association between the two objects.
-    case price_code
+  def self.for(rental_pricing, days_rented)
+    case rental_pricing.price_code
     when NEW_RELEASE
       NewReleaseRental
     when CHILDRENS
       ChildrensRental
     else
       Rental
-    end.new(movie, days_rented)
+    end.new(rental_pricing.movie, days_rented)
   end
 
   def initialize(movie, days_rented)
