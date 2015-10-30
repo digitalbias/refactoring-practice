@@ -22,10 +22,6 @@ class RentalPricing
   NEW_RELEASE = 1
 
   def self.for(price_code)
-    self.factory(price_code)
-  end
-
-  def self.factory(price_code)
     case price_code
     when NEW_RELEASE
       NewReleaseRentalPricing
