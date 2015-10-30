@@ -80,6 +80,10 @@ class Rental
     @days_rented = days_rented
   end
 
+  def title
+    movie.title
+  end
+
   def amount
     movie.amount(days_rented)
   end
@@ -119,7 +123,7 @@ class TextStatement
 
   def print(customer)
     result = "Rental Record for #{customer.name}\n"
-    result << customer.rentals.collect { |rental| "  #{rental.movie.title}  #{rental.amount}"}.join("\n") + "\n"
+    result << customer.rentals.collect { |rental| "  #{rental.title}  #{rental.amount}"}.join("\n") + "\n"
     result << "Amount owed is #{customer.total_amount}\n"
     result << "You earned #{customer.frequent_renter_points} frequent renter points"
     result
@@ -129,7 +133,7 @@ end
 class HtmlStatement
   def print(customer)
     result = "<h1>Rentals for <em>#{customer.name}</em></h1><p>\n"
-    result << customer.rentals.collect{|rental| "#{rental.movie.title}: #{rental.amount}<br>"}.join("\n") + "\n"
+    result << customer.rentals.collect{|rental| "#{rental.title}: #{rental.amount}<br>"}.join("\n") + "\n"
     result << "<p>You owe <em>#{customer.total_amount}</em><p>\n"
     result << "On this rental you earned <em>#{customer.frequent_renter_points}</em> frequent rental points<p>"
     result
