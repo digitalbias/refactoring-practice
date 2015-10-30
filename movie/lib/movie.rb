@@ -3,7 +3,7 @@ class Movie
 
   def initialize(title, pricing_code = :delete_me)
     @title = title
-    @pricing = RentalPricing.factory(pricing_code)
+    @pricing = RentalPricing.for(pricing_code)
   end
 
   def amount(days_rented)
@@ -21,11 +21,11 @@ class RentalPricing
   REGULAR = 0
   NEW_RELEASE = 1
 
-  def self.factory(price_code)
-    self.for(nil, price_code)
+  def self.for(price_code)
+    self.factory(price_code)
   end
 
-  def self.for(movie = nil, price_code = RentalPricing::REGULAR)
+  def self.factory(price_code)
     case price_code
     when NEW_RELEASE
       NewReleaseRentalPricing
