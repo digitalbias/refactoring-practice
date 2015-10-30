@@ -1,9 +1,19 @@
 class Movie
-  attr_reader :title
+  attr_reader :title, :pricing
 
-  def initialize(title)
+  def initialize(title, pricing_code = :delete_me)
     @title = title
+    @pricing = RentalPricing.for(self, pricing_code)
   end
+
+  def amount(days_rented)
+    pricing.amount(days_rented)
+  end
+
+  def points(days_rented)
+    pricing.points(days_rented)
+  end
+
 end
 
 class RentalPricing
@@ -11,7 +21,7 @@ class RentalPricing
   REGULAR = 0
   NEW_RELEASE = 1
 
-  def self.for(movie, price_code)
+  def self.for(movie, price_code = RentalPricing::REGULAR)
     case price_code
     when NEW_RELEASE
       NewReleaseRentalPricing
@@ -24,9 +34,8 @@ class RentalPricing
 
   attr_accessor :movie, :price_code
 
-  def initialize(movie, price_code = Rental::REGULAR)
+  def initialize(movie = nil, price_code = RentalPricing::REGULAR)
     @movie = movie
-    @price_code = price_code
   end
 
   def amount(days_rented)
@@ -64,24 +73,27 @@ class NewReleaseRentalPricing < RentalPricing
 end
 
 class Rental
-  attr_reader :movie, :days_rented, :price_code, :pricing
+  attr_reader :movie, :days_rented, :price_code
 
   def self.for(rental_pricing, days_rented)
-    Rental.new(rental_pricing.movie, days_rented, rental_pricing)
+    if rental_pricing.kind_of? Movie
+      Rental.new(rental_pricing, days_rented)
+    else
+      Rental.new(rental_pricing.movie, days_rented, rental_pricing)
+    end
   end
 
   def initialize(movie, days_rented, pricing = RentalPricing.new(movie))
     @movie = movie
     @days_rented = days_rented
-    @pricing = pricing
   end
 
   def amount
-    pricing.amount(days_rented)
+    movie.amount(days_rented)
   end
 
   def points
-    pricing.points(days_rented)
+    movie.points(days_rented)
   end
 end
 
