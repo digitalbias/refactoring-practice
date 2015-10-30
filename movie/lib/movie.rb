@@ -7,38 +7,29 @@ class Movie
 end
 
 class RentalPricing
+  CHILDRENS = 2
+  REGULAR = 0
+  NEW_RELEASE = 1
+
+  def self.for(movie, price_code)
+    case price_code
+    when NEW_RELEASE
+      NewReleaseRentalPricing
+    when CHILDRENS
+      ChildrensRentalPricing
+    else
+      RentalPricing
+    end.new(movie, price_code)
+  end
+
   attr_accessor :movie, :price_code
 
   def initialize(movie, price_code = Rental::REGULAR)
     @movie = movie
     @price_code = price_code
   end
-end
 
-class Rental
-  CHILDRENS = 2
-  REGULAR = 0
-  NEW_RELEASE = 1
-
-  attr_reader :movie, :days_rented, :price_code
-
-  def self.for(rental_pricing, days_rented)
-    case rental_pricing.price_code
-    when NEW_RELEASE
-      NewReleaseRental
-    when CHILDRENS
-      ChildrensRental
-    else
-      Rental
-    end.new(rental_pricing.movie, days_rented)
-  end
-
-  def initialize(movie, days_rented)
-    @movie = movie
-    @days_rented = days_rented
-  end
-
-  def amount
+  def amount(days_rented)
     this_amount = 2
     if days_rented > 2
       this_amount += (days_rented - 2) * 1.5
@@ -46,15 +37,14 @@ class Rental
     this_amount
   end
 
-  def points
+  def points(days_rented)
     1
-  end    
+  end
 
 end
 
-class ChildrensRental < Rental
-  def amount
-    # TODO: This calculation looks a lot like the base class calculation with some differences in amounts....
+class ChildrensRentalPricing < RentalPricing
+  def amount(days_rented)
     this_amount = 1.5
     if (days_rented > 3)
       this_amount += (days_rented - 3) * 1.5
@@ -63,16 +53,36 @@ class ChildrensRental < Rental
   end
 end
 
-class NewReleaseRental < Rental
-  def amount
+class NewReleaseRentalPricing < RentalPricing
+  def amount(days_rented)
     this_amount = days_rented * 3
   end
 
- def points
-    # add bonus for a two day new release rental
+  def points(days_rented)
     super + (days_rented > 1 ? 1 : 0)
   end    
+end
 
+class Rental
+  attr_reader :movie, :days_rented, :price_code, :pricing
+
+  def self.for(rental_pricing, days_rented)
+    Rental.new(rental_pricing.movie, days_rented, rental_pricing)
+  end
+
+  def initialize(movie, days_rented, pricing = RentalPricing.new(movie))
+    @movie = movie
+    @days_rented = days_rented
+    @pricing = pricing
+  end
+
+  def amount
+    pricing.amount(days_rented)
+  end
+
+  def points
+    pricing.points(days_rented)
+  end
 end
 
 class Customer

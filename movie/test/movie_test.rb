@@ -4,17 +4,17 @@ require_relative '../lib/movie'
 class MovieTest < Minitest::Test
 
   MOVIE_DATA = [
-    ["Jaws", Rental::REGULAR], 
-    ["Frozen", Rental::CHILDRENS], 
-    ["Spectre", Rental::NEW_RELEASE], 
-    ["Ghost Busters", Rental::REGULAR]
+    ["Jaws", RentalPricing::REGULAR], 
+    ["Frozen", RentalPricing::CHILDRENS], 
+    ["Spectre", RentalPricing::NEW_RELEASE], 
+    ["Ghost Busters", RentalPricing::REGULAR]
   ]
 
   attr_reader :customer
 
   def setup
     rental_pricing = MOVIE_DATA.collect do |title, price_code| 
-      RentalPricing.new(Movie.new(title), price_code)
+      RentalPricing.for(Movie.new(title), price_code)
     end
 
     @customer = Customer.new("George")
