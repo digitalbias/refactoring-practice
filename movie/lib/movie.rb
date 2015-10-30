@@ -54,11 +54,7 @@ end
 
 class ChildrensRentalPricing < RentalPricing
   def amount(days_rented)
-    this_amount = 1.5
-    if (days_rented > 3)
-      this_amount += (days_rented - 3) * 1.5
-    end
-    this_amount
+    this_amount = 1.5 + additional_amount(days_rented, 3)
   end
 end
 
