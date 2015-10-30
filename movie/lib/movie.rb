@@ -29,7 +29,7 @@ class RentalPricing
       ChildrensRentalPricing
     else
       RentalPricing
-    end.new(movie, price_code)
+    end.new
   end
 
   attr_accessor :movie, :price_code
@@ -76,14 +76,10 @@ class Rental
   attr_reader :movie, :days_rented, :price_code
 
   def self.for(rental_pricing, days_rented)
-    if rental_pricing.kind_of? Movie
-      Rental.new(rental_pricing, days_rented)
-    else
-      Rental.new(rental_pricing.movie, days_rented, rental_pricing)
-    end
+    Rental.new(rental_pricing, days_rented)
   end
 
-  def initialize(movie, days_rented, pricing = RentalPricing.new(movie))
+  def initialize(movie, days_rented)
     @movie = movie
     @days_rented = days_rented
   end
