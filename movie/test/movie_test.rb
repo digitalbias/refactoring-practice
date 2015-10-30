@@ -4,22 +4,31 @@ require_relative '../lib/movie'
 class MovieTest < Minitest::Test
 
   MOVIE_DATA = [
-    ["Jaws", Movie::REGULAR], 
-    ["Frozen", Movie::CHILDRENS], 
-    ["Spectre", Movie::NEW_RELEASE], 
-    ["Ghost Busters", Movie::REGULAR]
+    ["Jaws", Rental::REGULAR], 
+    ["Frozen", Rental::CHILDRENS], 
+    ["Spectre", Rental::NEW_RELEASE], 
+    ["Ghost Busters", Rental::REGULAR]
   ]
 
+  attr_reader :customer
+
   def setup
-    movies = MOVIE_DATA.map do |title, price_code|
+    movies = MOVIE_DATA.collect do |title, price_code|
       Movie.new(title, price_code)
+    end
+
+    price_mapping = MOVIE_DATA.collect do |title, price_code|
+      {
+        movie: movies.select{|movie| movie.title == title}.first, 
+        price_code: price_code
+      }
     end
 
     @customer = Customer.new("George")
 
-    @customer.add_rental(Rental.for(movies[0], 3))
-    @customer.add_rental(Rental.for(movies[1], 2))
-    @customer.add_rental(Rental.for(movies[2], 5))
+    customer.add_rental(Rental.for(price_mapping[0][:movie], 3))
+    customer.add_rental(Rental.for(price_mapping[1][:movie], 2))
+    customer.add_rental(Rental.for(price_mapping[2][:movie], 5))
   end
 
   def test_output_rental_statement
@@ -30,7 +39,7 @@ class MovieTest < Minitest::Test
       "Amount owed is 20.0\n"+
       "You earned 4 frequent renter points"
 
-    assert_equal expected, @customer.statement
+    assert_equal expected, customer.statement
   end
 
   def test_output_rental_statement_as_html
@@ -42,7 +51,7 @@ class MovieTest < Minitest::Test
       "<p>You owe <em>20.0</em><p>\n" +
       "On this rental you earned <em>4</em> frequent rental points<p>"
 
-    assert_equal expected, @customer.statement(HtmlStatement.new)
+    assert_equal expected, customer.statement(HtmlStatement.new)
   end
 
 end
