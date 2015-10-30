@@ -43,11 +43,7 @@ class RentalPricing
   end
 
   def additional_amount(days_rented, day_threshold)
-    if days_rented > day_threshold
-      (days_rented - day_threshold) * 1.5
-    else 
-      0
-    end
+    [days_rented - day_threshold, 0].max * 1.5
   end
 
 end
