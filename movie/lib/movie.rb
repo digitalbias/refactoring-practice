@@ -10,13 +10,19 @@ class Movie
     @title = title
     @price_code = price_code
   end
-
 end
 
 class Rental
   attr_reader :movie, :days_rented
 
   def self.for(movie, days_rented)
+    # Relying on the Movie here is bad...but is this really a Movie value?
+    # It could be argued to be independent of either the rental or the Movie.
+    #
+    # For example, a Movie is static and doesn't change, but the price to rent it
+    # can fluxuate based on market demands. I contend that the price for the rental
+    # is associated with the time of rental and the movie...it's based on 
+    # an association between the two objects.
     case movie.price_code
     when Movie::NEW_RELEASE
       NewReleaseRental
