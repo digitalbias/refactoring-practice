@@ -35,7 +35,11 @@ class RentalPricing
   attr_accessor :movie, :price_code
 
   def amount(days_rented)
-    2 + additional_amount(days_rented, 2)
+    this_amount = 2
+    if days_rented > 2
+      this_amount += (days_rented - 2) * 1.5
+    end
+    this_amount
   end
 
   def points(days_rented)
@@ -54,7 +58,11 @@ end
 
 class ChildrensRentalPricing < RentalPricing
   def amount(days_rented)
-    1.5 + additional_amount(days_rented, 3)
+    this_amount = 1.5
+    if (days_rented > 3)
+      this_amount += (days_rented - 3) * 1.5
+    end
+    this_amount
   end
 end
 
